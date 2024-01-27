@@ -1,1 +1,1 @@
-extern crate basilisk_linalg;
+pub extern crate basilisk_linalg;

@@ -5,7 +5,7 @@
 
 extern crate ocl;
 
-enum BASMatrixDevice {
+pub enum BASMatrixDevice {
     OPENCL,
     CPU
 }
@@ -20,11 +20,11 @@ enum BASMatrixDevice {
     BY THE WAY, it is SAFE, dw
 */
 static mut DEV: BASMatrixDevice = BASMatrixDevice::CPU;
-fn set_device(d: BASMatrixDevice) {
+pub fn set_device(d: BASMatrixDevice) {
     unsafe { DEV = d };    
 }
 
-struct BASMatrix {
+pub struct BASMatrix {
     rows: usize,
     cols: usize,
     data: Vec<f64>,
