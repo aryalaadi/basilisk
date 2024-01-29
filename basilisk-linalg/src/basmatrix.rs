@@ -2,9 +2,12 @@
     file: basilisk-linalg/src/basmatrix.rs
     license: GPL3
 */
-
-//extern crate ocl;
-
+	
+/*
+ * #![feature(inherent_associated_types)]
+ * on Hold until this feature becomes stable
+ */
+ 
 pub enum BASMatrixDevice {
     OPENCL,
     CPU
@@ -84,6 +87,21 @@ impl BASMatrix {
 		}
 	}
 
+	/*
+	 * MatA.BASfloatOP(); operates y=BASfloatOP(x) on every element
+	 * BASfloatOP is a pointer a pure float function like sin(x)   
+	 * But this method is on hold until function pointers becomes stable rust
+	 *
+	pub type BASfloatOP_t =  fn(f64) -> f64;
+	pub fn BASflatOP(&mut self, func: BASfloatOP_t) {
+		for i in 0..self.rows {
+			for j in 0..self.cols {
+				self.data[i*self.cols+j] = func(self.data[i*self.cols+j]);
+			}
+		}
+	}
+	*/
+		 
     fn _cpu_add(&mut self, to_add: &BASMatrix){
         for i in 0..self.rows  {
             for j in 0..self.cols {
