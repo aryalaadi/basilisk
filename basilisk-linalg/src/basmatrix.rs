@@ -69,7 +69,7 @@ impl BASMatrix {
             Err("BASMatrix: cannot add")
         }
     }
-    
+
     pub fn mul(&mut self, to_mul: &BASMatrix) -> Result<i32, &str> {
         if self.cols == to_mul.rows {
             // NOTE: it is VERY safe :p
@@ -114,29 +114,29 @@ impl BASMatrix {
             }
         }
     }
-    
+
     fn _cpu_mul(&mut self, to_mul: &BASMatrix) {
-		let tmp = self.clone();
-		self.rows = to_mul.rows;
-		// I cant imagine how slow this would be for large computations...
+        let tmp = self.clone();
+        self.rows = to_mul.rows;
+        // I cant imagine how slow this would be for large computations...
         for i in 0..self.rows {
             for j in 0..self.cols {
-                let mut cell: f64 = 0.0; 
+                let mut cell: f64 = 0.0;
                 for k in 0..self.rows {
-					cell += tmp.data[i*self.cols+k]*to_mul.data[k*self.rows+j];
-				}
-				self.data[i * self.cols + j] = cell;
+                    cell += tmp.data[i * self.cols + k] * to_mul.data[k * self.rows + j];
+                }
+                self.data[i * self.cols + j] = cell;
             }
         }
     }
     /*
-       turns out clc doesnt have a driver for my GPU
-       and I cant run opencl through my CPU because
-       my distribution has not packaged the intel
-       programs and libraries for that :(
-       opencl backend on hold until either I package the
-       intel programs or I write the GPU driver.
-     */
+      turns out clc doesnt have a driver for my GPU
+      and I cant run opencl through my CPU because
+      my distribution has not packaged the intel
+      programs and libraries for that :(
+      opencl backend on hold until either I package the
+      intel programs or I write the GPU driver.
+    */
     fn _opencl_add(&mut self, to_add: &BASMatrix) {
         print!("TODO");
     }
