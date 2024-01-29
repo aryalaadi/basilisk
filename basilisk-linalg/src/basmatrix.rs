@@ -3,7 +3,7 @@
     license: GPL3
 */
 
-extern crate ocl;
+//extern crate ocl;
 
 pub enum BASMatrixDevice {
     OPENCL,
@@ -80,6 +80,15 @@ impl BASMatrix {
             }    
         }    
     }	
+    
+    /*
+     * turns out clc does have a driver for my GPU 
+     * and I cant run opencl through my CPU because 
+     * my distribution has not packaged the intel 
+     * programs and libraries for that :(
+     * opencl backend on hold until either I package the 
+     * intel programs or I write the GPU driver. 
+     */
     fn _opencl_add(&mut self, to_add: &BASMatrix) {
         print!("TODO");        
     }
