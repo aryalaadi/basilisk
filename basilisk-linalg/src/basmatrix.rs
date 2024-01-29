@@ -24,6 +24,7 @@ pub fn set_device(d: BASMatrixDevice) {
     unsafe { DEV = d };    
 }
 
+#[derive(Clone)]
 pub struct BASMatrix {
     rows: usize,
     cols: usize,
@@ -72,6 +73,16 @@ impl BASMatrix {
             Err("BASMatrix: cannot add")
         }
     }
+    
+    // I dont know if this is too slow, but it gets the job done for now 
+    pub fn transpose(&mut self) {
+		let tmp = self.clone();
+		for i in 0..self.rows {
+			for j in 0..self.cols {
+				self.data[i*self.cols +j] = tmp.data[j*self.cols+i];
+			}
+		}
+	}
 
     fn _cpu_add(&mut self, to_add: &BASMatrix){
         for i in 0..self.rows  {
@@ -82,7 +93,7 @@ impl BASMatrix {
     }	
     
     /*
-     * turns out clc does have a driver for my GPU 
+     * turns out clc doesnt have a driver for my GPU 
      * and I cant run opencl through my CPU because 
      * my distribution has not packaged the intel 
      * programs and libraries for that :(
