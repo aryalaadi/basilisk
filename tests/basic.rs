@@ -15,10 +15,10 @@ fn basmat_new() {
 	test.print();
 	test.transpose();
 	test.print();
-	test.BASflatOP(f64::sin);
+	test.BASfloatOP(f64::sin);
 	test.print();
 	let lambda = |x: f64| -> f64 { x + 5.0};
-	test.BASflatOP(lambda);
+	test.BASfloatOP(lambda);
 	test.print();
 	
 	let mut test2 = basmatrix::BASMatrix::new(4, 4);

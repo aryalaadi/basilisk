@@ -98,7 +98,7 @@ impl BASMatrix {
         MatA.BASfloatOP(); operates y=BASfloatOP(x) on every element
         BASfloatOP is a pointer a pure float function like sin(x)
     */
-    pub fn BASflatOP(&mut self, func: fn(f64) -> f64) {
+    pub fn BASfloatOP(&mut self, func: fn(f64) -> f64) {
         for i in 0..self.rows {
             for j in 0..self.cols {
                 self.data[i * self.cols + j] = func(self.data[i * self.cols + j]);
