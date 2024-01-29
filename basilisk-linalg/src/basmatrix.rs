@@ -69,7 +69,21 @@ impl BASMatrix {
             Err("BASMatrix: cannot add")
         }
     }
-
+    
+    pub fn mul(&mut self, to_mul: &BASMatrix) -> Result<i32, &str> {
+        if self.cols == to_mul.rows {
+            // NOTE: it is VERY safe :p
+            unsafe {
+                match DEV {
+                    BASMatrixDevice::CPU => self._cpu_mul(to_mul),
+                    BASMatrixDevice::OPENCL => self._opencl_mul(to_mul),
+                }
+            }
+            Ok(0)
+        } else {
+            Err("BASMatrix: cannot mul")
+        }
+    }
     // I dont know if this is too slow, but it gets the job done for now
     pub fn transpose(&mut self) {
         let tmp = self.clone();
@@ -83,7 +97,6 @@ impl BASMatrix {
     /*
         MatA.BASfloatOP(); operates y=BASfloatOP(x) on every element
         BASfloatOP is a pointer a pure float function like sin(x)
-        But this method is on hold until function pointers becomes stable rust
     */
     pub fn BASflatOP(&mut self, func: fn(f64) -> f64) {
         for i in 0..self.rows {
@@ -101,7 +114,21 @@ impl BASMatrix {
             }
         }
     }
-
+    
+    fn _cpu_mul(&mut self, to_mul: &BASMatrix) {
+		let tmp = self.clone();
+		self.rows = to_mul.rows;
+		// I cant imagine how slow this would be for large computations...
+        for i in 0..self.rows {
+            for j in 0..self.cols {
+                let mut cell: f64 = 0.0; 
+                for k in 0..self.rows {
+					cell += tmp.data[i*self.cols+k]*to_mul.data[k*self.rows+j];
+				}
+				self.data[i * self.cols + j] = cell;
+            }
+        }
+    }
     /*
        turns out clc doesnt have a driver for my GPU
        and I cant run opencl through my CPU because
@@ -111,6 +138,9 @@ impl BASMatrix {
        intel programs or I write the GPU driver.
      */
     fn _opencl_add(&mut self, to_add: &BASMatrix) {
+        print!("TODO");
+    }
+    fn _opencl_mul(&mut self, to_mul: &BASMatrix) {
         print!("TODO");
     }
 }
