@@ -6,7 +6,7 @@
 #[derive(Clone)]
 pub struct BASTensor {
     dim: Vec<usize>,
-    data: Vec<f64>,
+    pub data: Vec<f64>,
     size: usize,
 }
 
@@ -21,17 +21,18 @@ impl BASTensor {
     }
 
     pub fn set(&mut self, pos: &[usize], value: f64) -> Result<i32, &str> {
-        if pos.len() != self.dim.len() {
+		let d = pos.len();
+        if d != self.dim.len() {
             return Err("BASTensor: cannot set");
         }
-        let mut index = 1;
-        for i in pos.iter() {
-            index *= i;
+        let mut flat_index = 0;
+        for (i, &index) in pos.iter().enumerate() {
+            if index >= self.dim[i] {
+                return  Err("BASTensor: cannot set");
+            }
+            flat_index = flat_index * self.dim[i] + index;
         }
-        if index != self.size {
-            return Err("BASTensor: cannot set");
-        }
-        self.data[index] = value;
+        self.data[flat_index] = value;
         Ok(0)
     }
 }
