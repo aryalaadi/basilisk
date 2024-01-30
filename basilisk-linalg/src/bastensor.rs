@@ -20,15 +20,23 @@ impl BASTensor {
         BASTensor { dim, data, size }
     }
 
+    pub fn new_from_vec(data: Vec<f64>, dim: Vec<usize>) -> Self {
+        let mut size = 1;
+        for i in dim.iter() {
+            size *= i;
+        }
+        BASTensor { dim, data, size }
+    }
+
     pub fn set(&mut self, pos: &[usize], value: f64) -> Result<i32, &str> {
-		let d = pos.len();
+        let d = pos.len();
         if d != self.dim.len() {
             return Err("BASTensor: cannot set");
         }
         let mut flat_index = 0;
         for (i, &index) in pos.iter().enumerate() {
             if index >= self.dim[i] {
-                return  Err("BASTensor: cannot set");
+                return Err("BASTensor: cannot set");
             }
             flat_index = flat_index * self.dim[i] + index;
         }
