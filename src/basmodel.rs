@@ -2,9 +2,7 @@
     file: src/basmodel.rs
     license: LGPL3
 */
-#![allow(dead_code)]
-#![allow(non_snake_case)]
-#![allow(non_camel_case_types)]
+
 /*
 
 only a basic idea on how it could work
