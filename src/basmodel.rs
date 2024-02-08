@@ -5,7 +5,7 @@
 
 /*
 
-only a basic idea on how it could work 
+only a basic idea on how it could work
 
 use basilisk::*;
 
@@ -19,25 +19,28 @@ SEQ.setLayer(inputLayer, 0);
 SEQ.setLayer(hiddenLayer, 1);
 SEQ.setLayer(outputLayer, 2);
 
-SEQ.compile(BASOptimizer::SGD); 
-SEQ.fit(ds_train, 6, ds_test); 
+SEQ.compile(BASOptimizer::SGD);
+SEQ.fit(ds_train, 6, ds_test);
 */
 
+use crate::basactivation::*;
+use crate::baslayer::*;
+
 pub struct BASModelSEQ {
-	n: i32,
-	layers: Vec<BASLayer>,	
+    n: usize,
+    layers: Vec<BASLayer>,
 }
 
 impl BASModelSEQ {
-	pub fn new(n: i32) -> Self{
-		BASModelSEQ {
-			n,
-			layers: vec![BASLayer::empty(0, BASActivation::NONE); n],
-		}
-	}
+    pub fn new(n: usize) -> Self {
+        BASModelSEQ {
+            n,
+            layers: vec![BASLayer::empty(1, BASActivation::NONE); n],
+        }
+    }
 
-	// only prototype, introduce lifetimes or smth idk
-	pub fn setLayer(&mut self, layer: BASLayer, n: i32) {
-		layers[n] = layer;
-	}
+    // only prototype, introduce lifetimes or smth idk
+    pub fn setLayer(&mut self, layer: BASLayer, n: usize) {
+        self.layers[n] = layer;
+    }
 }
