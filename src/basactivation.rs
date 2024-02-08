@@ -23,7 +23,7 @@ pub fn logsig(x: f64) -> f64 {
 }
 
 impl BASActivation {
-    pub fn activate(self, func: fn(f64) -> f64, x: f64) -> f64 {
+    pub fn activate(&self, func: fn(f64) -> f64, x: f64) -> f64 {
         match self {
             BASActivation::NONE => return func(x),
             BASActivation::RELU => return relu(func(x)),

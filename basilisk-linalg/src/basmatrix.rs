@@ -24,8 +24,8 @@ pub fn set_device(d: BASMatrixDevice) {
 
 #[derive(Clone)]
 pub struct BASMatrix {
-    rows: usize,
-    cols: usize,
+    pub rows: usize,
+    pub cols: usize,
     data: Vec<f64>,
 }
 
@@ -62,6 +62,21 @@ impl BASMatrix {
                 match DEV {
                     BASMatrixDevice::CPU => self._cpu_add(to_add),
                     BASMatrixDevice::OPENCL => self._opencl_add(to_add),
+                }
+            }
+            Ok(0)
+        } else {
+            Err("BASMatrix: cannot add")
+        }
+    }
+
+    pub fn sub(&mut self, to_add: &BASMatrix) -> Result<i32, &str> {
+        if self.rows == to_add.rows && self.cols == to_add.cols {
+            // NOTE: it is VERY safe :p
+            unsafe {
+                match DEV {
+                    BASMatrixDevice::CPU => self._cpu_sub(to_sub),
+                    BASMatrixDevice::OPENCL => self._opencl_sub(to_sub),
                 }
             }
             Ok(0)
@@ -115,6 +130,15 @@ impl BASMatrix {
         }
     }
 
+    fn _cpu_sub(&mut self, to_sub: &BASMatrix) {
+        for i in 0..self.rows {
+            for j in 0..self.cols {
+                self.data[i * self.cols + j] =
+                    self.data[i * self.cols + j] + to_sub.data[i * self.cols + j];
+            }
+        }
+    }
+
     fn _cpu_mul(&mut self, to_mul: &BASMatrix) {
         let tmp = self.clone();
         self.rows = to_mul.rows;
@@ -138,6 +162,9 @@ impl BASMatrix {
       intel programs or I write the GPU driver.
     */
     fn _opencl_add(&mut self, to_add: &BASMatrix) {
+        print!("TODO");
+    }
+    fn _opencl_sub(&mut self, to_mul: &BASMatrix) {
         print!("TODO");
     }
     fn _opencl_mul(&mut self, to_mul: &BASMatrix) {

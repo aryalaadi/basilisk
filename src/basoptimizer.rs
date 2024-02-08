@@ -1,4 +1,10 @@
 /*
-    file: src/bassgd.rs
-    license: GPL3
+    file: src/basoptimizer.rs
+    license: LGPL3
 */
+
+pub enum BASOptimizer {
+    SGD,
+}
+
+impl BASOptimizer {}

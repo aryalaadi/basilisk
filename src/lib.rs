@@ -4,5 +4,7 @@
 
 pub extern crate basilisk_linalg;
 mod basactivation;
+mod bascost;
 mod baslayer;
 mod basmodel;
+mod basoptimizer;
