@@ -70,8 +70,8 @@ impl BASMatrix {
         }
     }
 
-    pub fn sub(&mut self, to_add: &BASMatrix) -> Result<i32, &str> {
-        if self.rows == to_add.rows && self.cols == to_add.cols {
+    pub fn sub(&mut self, to_sub: &BASMatrix) -> Result<i32, &str> {
+        if self.rows == to_sub.rows && self.cols == to_sub.cols {
             // NOTE: it is VERY safe :p
             unsafe {
                 match DEV {
@@ -109,6 +109,9 @@ impl BASMatrix {
         }
     }
 
+    pub fn sum(&self) -> f64 {
+        return self.data.iter().sum();
+    }
     /*
         MatA.BASfloatOP(); operates y=BASfloatOP(x) on every element
         BASfloatOP is a pointer a pure float function like sin(x)

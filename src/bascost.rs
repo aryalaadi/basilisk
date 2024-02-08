@@ -11,10 +11,10 @@ pub enum BASCost {
 }
 
 fn mse(mut w: BASMatrix, d: BASMatrix) -> f64 {
-    let cost: f64 = 0.0;
+    let mut cost: f64 = 0.0;
     let _ = w.sub(&d);
     _ = w.mul(&w.clone());
-    cost = w.sum() / w.rows;
+    cost = w.sum() / (w.rows as f64);
     return cost;
 }
 
