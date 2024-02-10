@@ -19,8 +19,14 @@ SEQ.setLayer(inputLayer, 0);
 SEQ.setLayer(hiddenLayer, 1);
 SEQ.setLayer(outputLayer, 2);
 
-SEQ.compile();
-SEQ.fit(ds_train, 6, ds_test);
+SEQ.setTrainData(ds_train);
+SEQ.setTestData(ds_test);
+
+SEQ.train(6);
+SEQ.test(ds_test);
+
+Once basilisk can do this much and works as expected 
+the PR #6 will be merged 
 */
 
 use crate::basactivation::*;
@@ -46,5 +52,19 @@ impl BASModelSEQ {
         self.layers[n] = layer;
     }
 
-    pub fn compile(&mut self) {}
+    pub fn setTrainData(&mut self) {
+        // large buffer of input values, a matirx of [n_ds, BASLayer.n]
+        // in the model struct add new attributes traindata testdata
+        // set traindata to that matrix 
+        // also same for test 
+    }
+
+    pub fn train() {
+        // a simple for loop n times 
+        // another loop for the layers
+        // update the weights and activation for each layer in seq
+        // optimize 
+        
+        // now make sure the weights and activation can be accessed later on
+    }
 }

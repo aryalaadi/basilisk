@@ -26,7 +26,7 @@ pub fn set_device(d: BASMatrixDevice) {
 pub struct BASMatrix {
     pub rows: usize,
     pub cols: usize,
-    data: Vec<f64>,
+    pub data: Vec<f64>,
 }
 
 impl BASMatrix {

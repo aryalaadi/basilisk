@@ -16,7 +16,7 @@ pub enum BASLayer_t {
 #[derive(Clone)]
 pub struct BASLayer {
     act: BASActivation,
-    layers: usize,
+    n: usize,
     layer_t: BASLayer_t,
     neurons: Vec<f64>,
     weights: BASMatrix,
@@ -26,7 +26,7 @@ impl BASLayer {
     pub fn empty(x: usize, act: BASActivation) -> BASLayer {
         BASLayer {
             act: act,
-            layers: x,
+            n: x,
             layer_t: BASLayer_t::EMPTY,
             neurons: vec![0.0],
             weights: BASMatrix::new(0, 0),
@@ -35,7 +35,7 @@ impl BASLayer {
     pub fn flat(x: usize, act: BASActivation) -> BASLayer {
         BASLayer {
             act: act,
-            layers: x,
+            n: x,
             layer_t: BASLayer_t::FLAT,
             neurons: vec![0.0; x],
             weights: BASMatrix::new(x, 1),
@@ -44,7 +44,7 @@ impl BASLayer {
     pub fn dense(inp: usize, out: usize, act: BASActivation) -> BASLayer {
         BASLayer {
             act: act,
-            layers: out,
+            n: out,
             layer_t: BASLayer_t::DENSE,
             neurons: vec![0.0; out],
             weights: BASMatrix::new(inp, out),
