@@ -1,13 +1,57 @@
-\documentclass{article}
+\documentclass[a4paper,11pt]{article}
 \usepackage{amsmath}
-\title{basilisk: implementing stochastic gradient descent}
+\title{\vspace{-1.0cm}basilisk: implementing stochastic gradient descent}
 \author{Aryal Aaditya}
 \begin{document}
   \pagenumbering{arabic}
   \maketitle
   \pagenumbering{arabic}
-  \section{Abstract}
+  \section{abstract}
 	Stochasitc gradient descent is a basic machine 
-	learning optimization algorithm. 	
+	learning optimization algorithm, this documentation 
+  details how the basilisk stochastic gradient descent
+  has been implemented with the Rust language.
+
+  \section{theory}
+  The stochastic gradient descent minimizes a cost function.
+  The cost function returns an estimate of how accurately can the current weights and biases compute a given pattern.
+  The stochastic gradient descent optimizer then approaches a local minima every iteration, and adjusts the weights until
+  the model can accurately compute a given pattern. The optimization itself can be expressed with a single equation:
+  \begin{equation}
+    w := w - \eta \nabla Q(w) 
+  \end{equation}
+  where, \(w\) is the weight to be adjusted, \(Q(w)\) being the 
+  cost function used to estimate the accuracy and \(\eta\) being the learning rate.
+  
+  \section{implementation}
+  The following code snippet is the basic implementation of the gradient descent. 
+  The optimizer function, ironically is unoptimzied. 
+  This method is an implementation of the BASOptimizer struct. The \(h\) parameter is a matrix of infinitesimals.
+  x1 variable computes \(\nabla Q(w)\) which also can be expressed as
+  \(\lim_{x \to \infty}\dfrac{Q(w+h)-Q(w)}{h}\), a simple finite difference.
+  After the finite difference has been computed, the weight is adjusted by subtracting the finite difference from the previous weight. The weights when iterated and trained on multiple datasets approach a certain point where it can accurately compute a given pattern with a certain accuracy. 
+  The \(d\) parameter is one unit of the dataset, which is used to compute the 
+  cost function. This optimization is done with every single unit of data set provided to train, for multiple epohs until a local minima has been approached.
+  \begin{verbatim}
+src/basoptimizer.rs:26
+
+pub fn optimize(self, mut w: BASMatrix, d: BASMatrix, rate: f64) {
+  let mut x = w.clone();
+  let _ = x.add(&self.h);
+  let mut x1 = BASCost::loss(BASCost::MSE, &x, &d);
+  let _ = x1.sub(&BASCost::loss(BASCost::MSE, &w, &d));
+
+  for i in 0..x1.rows {
+    for j in 0..x1.cols {
+      x1.data[i * x1.cols + j] = 
+        (x1.data[i * x1.cols + j]) / self.h.data[0]*rate;
+    }
+  }
+  let _ = w.sub(&x1);
+}
+    \end{verbatim}
+  
+    \section{testing and observation}
+    TODO
 \end{document}
 
