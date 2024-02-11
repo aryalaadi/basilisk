@@ -112,6 +112,28 @@ impl BASMatrix {
     pub fn sum(&self) -> f64 {
         return self.data.iter().sum();
     }
+    
+    pub fn scalarmul(&mut self, x:f64) {
+        for i in 0..self.rows {
+            for j in 0..self.cols {
+                self.data[i * self.cols + j] = self.data[i * self.cols + j]*x;
+            }
+        }
+    }
+    pub fn scalardiv(&mut self, x:f64) {
+        for i in 0..self.rows {
+            for j in 0..self.cols {
+                self.data[i * self.cols + j] = self.data[i * self.cols + j]/x;
+            }
+        }
+    }
+    pub fn scalaradd(&mut self, x:f64) {
+        for i in 0..self.rows {
+            for j in 0..self.cols {
+                self.data[i * self.cols + j] = self.data[i * self.cols + j]+x;
+            }
+        }
+    }
     /*
         MatA.BASfloatOP(); operates y=BASfloatOP(x) on every element
         BASfloatOP is a pointer a pure float function like sin(x)

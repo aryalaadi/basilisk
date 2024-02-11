@@ -33,10 +33,11 @@ use crate::basactivation::*;
 use crate::baslayer::*;
 use crate::basoptimizer::*;
 
+#[derive(Clone)]
 pub struct BASModelSEQ {
-    n: usize,
-    layers: Vec<BASLayer>,
-    optimizer: BASOptimizer,
+    pub n: usize,
+    pub layers: Vec<BASLayer>,
+    pub optimizer: BASOptimizer,
 }
 
 impl BASModelSEQ {

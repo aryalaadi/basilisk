@@ -2,43 +2,52 @@
     file:       bascost.rs
     license:    LGPL3
 */
-
 use basilisk_linalg::basmatrix::BASMatrix;
+
+use crate::basmodel::BASModelSEQ;
 
 pub enum BASCost {
     MSE,
     SoftMax,
 }
 
-fn mse(w: &BASMatrix, d: &BASMatrix) -> BASMatrix {
-    let mut tmp = w.clone();
-    let _ = tmp.sub(&d);
-    _ = tmp.mul(&w);
+// NOTE: this is a stupid hack
+fn null(x:f64) -> f64 {
+    return x;
+}
 
-    /*
-        this is such a dirty hack 
-        The correct way to do this is to define a function 
-        which knows how many rows the matrices have 
-        and it should be a simple f(x) = x/w.rows
-        and then pass the lambda function pointer to
-        BASfloatOp which should do the operation for us
-        BUT rust wont let me use w.rows anonymously 
-        so I had to resort to basically copying a block 
-        from the BASfloatOp impl
-     */
-    for i in 0..tmp.rows {
-        for j in 0..tmp.cols {
-            tmp.data[i * tmp.cols + j] = (tmp.data[i * tmp.cols + j])/tmp.rows as f64;
+fn mse(m: &BASModelSEQ, d: &[BASMatrix; 2]) -> BASMatrix {
+    let mut cost = BASMatrix::new(d[1].rows, d[1].cols);
+    let pred = d[0].clone();
+    _pred(pred, m, 1);
+
+    let _ = cost.sub(&d[1]);
+    let _ = cost.mul(&cost.clone());
+    let n = cost.rows as f64;
+    let _ = cost.scalardiv(n);
+
+    return cost;
+}
+
+// c current layer
+fn _pred(mut m :BASMatrix, model: &BASModelSEQ, c: usize) -> usize {
+    if model.n>=c {
+        let _ = m.mul(&model.layers[c].weights);
+        for i in 0..m.rows*m.cols {
+            m.data[i] = model.layers[c].act.activate(null, m.data[i]);
         }
+        if model.n==c {return 0;}
+        else { return _pred(m, model,model.n+1); }
     }
-
-    return tmp;
+    else {
+        return 0;
+    }
 }
 
 impl BASCost {
-    pub fn loss(self, w: &BASMatrix, d: &BASMatrix) -> BASMatrix {
+    pub fn loss(self, m: &BASModelSEQ, d: &[BASMatrix; 2]) -> BASMatrix {
         match self {
-            BASCost::MSE => return mse(w, d),
+            BASCost::MSE => return mse(m, d),
             BASCost::SoftMax => return todo!(),
         }
     }

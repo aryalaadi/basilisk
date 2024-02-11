@@ -15,11 +15,11 @@ pub enum BASLayer_t {
 }
 #[derive(Clone)]
 pub struct BASLayer {
-    act: BASActivation,
-    n: usize,
-    layer_t: BASLayer_t,
-    neurons: Vec<f64>,
-    weights: BASMatrix,
+    pub act: BASActivation,
+    pub n: usize,
+    pub layer_t: BASLayer_t,
+    pub neurons: Vec<f64>,
+    pub weights: BASMatrix,
 }
 
 impl BASLayer {
