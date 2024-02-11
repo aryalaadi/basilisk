@@ -1,5 +1,3 @@
-use std::os::unix::ucred::peer_cred;
-
 /*
     file:       bascost.rs
     license:    LGPL3
@@ -20,8 +18,22 @@ fn null(x:f64) -> f64 {
 
 fn mse(m: &BASModelSEQ, d: &[BASMatrix; 2]) -> BASMatrix {
     let mut cost = BASMatrix::new(d[1].rows, d[1].cols);
-    let pred = d[0].clone();
-    _pred(pred, m, 1);
+    let mut pred = BASMatrix::new(d[0].rows, d[0].cols);
+
+    let mut c = 1;
+    loop {
+        if m.n>=c {
+            let _ = pred.mul(&m.layers[c].weights);
+            for i in 0..pred.rows*pred.cols {
+                pred.data[i] = m.layers[c].act.activate(null, pred.data[i]);
+            }
+            if m.n==c {break}
+            else { c+=1; }
+        }
+        else {
+            break;
+        }
+    }
 
     let _ = cost.add(&pred);
     let _ = cost.sub(&d[1]);
@@ -30,21 +42,6 @@ fn mse(m: &BASModelSEQ, d: &[BASMatrix; 2]) -> BASMatrix {
     let _ = cost.scalardiv(n);
 
     return cost;
-}
-
-// c current layer
-fn _pred(mut m :BASMatrix, model: &BASModelSEQ, c: usize) -> usize {
-    if model.n>=c {
-        let _ = m.mul(&model.layers[c].weights);
-        for i in 0..m.rows*m.cols {
-            m.data[i] = model.layers[c].act.activate(null, m.data[i]);
-        }
-        if model.n==c {return 0;}
-        else { return _pred(m, model,model.n+1); }
-    }
-    else {
-        return 0;
-    }
 }
 
 impl BASCost {
