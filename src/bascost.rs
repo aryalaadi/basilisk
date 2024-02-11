@@ -1,9 +1,9 @@
 /*
-    file:       bascost.rs
+    file:       src/bascost.rs
     license:    LGPL3
 */
-use basilisk_linalg::basmatrix::BASMatrix;
 
+use basilisk_linalg::basmatrix::BASMatrix;
 use crate::basmodel::BASModelSEQ;
 
 pub enum BASCost {
@@ -20,9 +20,9 @@ fn mse(m: &BASModelSEQ, d: &[BASMatrix; 2]) -> BASMatrix {
     let mut cost = BASMatrix::new(d[1].rows, d[1].cols);
     let mut pred = BASMatrix::new(d[0].rows, d[0].cols);
 
-    let mut c = 1;
+    let mut c = 0;
     loop {
-        if m.n>=c {
+        if m.n-1>=c {
             let _ = pred.mul(&m.layers[c].weights);
             for i in 0..pred.rows*pred.cols {
                 pred.data[i] = m.layers[c].act.activate(null, pred.data[i]);

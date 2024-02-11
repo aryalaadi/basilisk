@@ -4,7 +4,6 @@
 */
 
 use basilisk_linalg::basmatrix::BASMatrix;
-
 use crate::basactivation::*;
 
 #[derive(Clone)]
@@ -38,7 +37,7 @@ impl BASLayer {
             n: x,
             layer_t: BASLayer_t::FLAT,
             neurons: vec![0.0; x],
-            weights: BASMatrix::new(x, 1),
+            weights: BASMatrix::newrand(x, 1),
         }
     }
     pub fn dense(inp: usize, out: usize, act: BASActivation) -> BASLayer {
@@ -47,7 +46,7 @@ impl BASLayer {
             n: out,
             layer_t: BASLayer_t::DENSE,
             neurons: vec![0.0; out],
-            weights: BASMatrix::new(inp, out),
+            weights: BASMatrix::newrand(inp, out),
         }
     }
 }

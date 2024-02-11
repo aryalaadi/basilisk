@@ -4,7 +4,6 @@
 */
 
 use basilisk_linalg::basmatrix::BASMatrix;
-
 use crate::{bascost::BASCost, basmodel::BASModelSEQ};
 
 #[derive(Clone)]
@@ -25,6 +24,7 @@ impl BASOptimizer {
             h: h,
         }
     }
+
     pub fn optimize(self, mut model: BASModelSEQ, d: &[BASMatrix; 2], layer: usize, rate: f64) {
         let mut wx = model.clone();
         wx.layers[layer].weights.scalaradd(self.h);

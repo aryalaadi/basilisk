@@ -1,7 +1,8 @@
 /*
     file: basilisk-linalg/src/basmatrix.rs
-    license: GPL3
+    license: LGPL3
 */
+use rand::Rng;
 
 pub enum BASMatrixDevice {
     OPENCL,
@@ -36,6 +37,18 @@ impl BASMatrix {
             cols,
             data: vec![0.0; rows * cols],
         }
+    }
+
+    pub fn newrand(rows: usize, cols: usize) -> Self {
+        let mut rng = rand::thread_rng();
+        let mut mat = BASMatrix::new(rows, cols);
+        for i in 0..mat.rows {
+            for j in 0..mat.cols {
+                mat.data[i * mat.cols + j] = rng.gen();
+            }
+            println!();
+        }
+        return mat;
     }
 
     pub fn get(&self, row: usize, col: usize) -> f64 {
