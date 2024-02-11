@@ -1,3 +1,5 @@
+use std::os::unix::ucred::peer_cred;
+
 /*
     file:       bascost.rs
     license:    LGPL3
@@ -21,6 +23,7 @@ fn mse(m: &BASModelSEQ, d: &[BASMatrix; 2]) -> BASMatrix {
     let pred = d[0].clone();
     _pred(pred, m, 1);
 
+    let _ = cost.add(&pred);
     let _ = cost.sub(&d[1]);
     let _ = cost.mul(&cost.clone());
     let n = cost.rows as f64;
