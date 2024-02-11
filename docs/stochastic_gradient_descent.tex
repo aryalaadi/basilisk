@@ -1,16 +1,15 @@
 \documentclass[a4paper,11pt]{article}
 \usepackage{amsmath}
-\title{\vspace{-1.0cm}basilisk: implementing stochastic gradient descent}
+\title{\vspace{-1.0cm}basilisk: on implementing SGD optimization}
 \author{Aryal Aaditya}
 \begin{document}
   \pagenumbering{arabic}
   \maketitle
   \pagenumbering{arabic}
   \section{abstract}
-	Stochasitc gradient descent is a basic machine 
-	learning optimization algorithm, this documentation 
-  details how the basilisk stochastic gradient descent
-  has been implemented with the Rust language.
+	The stochasitc gradient descent(SGD) is a basic machine 
+	learning optimization algorithm which updates a layer's weights to approach of local minima. This documentation 
+  details how the basilisk framework implements stochastic gradient descent.
 
   \section{theory}
   The stochastic gradient descent minimizes a cost function.
@@ -28,26 +27,22 @@
   The optimizer function, ironically is unoptimzied. 
   This method is an implementation of the BASOptimizer struct. The \(h\) parameter is a matrix of infinitesimals.
   x1 variable computes \(\nabla Q(w)\) which also can be expressed as
-  \(\lim_{x \to \infty}\dfrac{Q(w+h)-Q(w)}{h}\), a simple finite difference.
+  \(\lim_{x \to \infty}\dfrac{Q(w+h)-Q(w)}{h}\), a simple partial finite difference.
   After the finite difference has been computed, the weight is adjusted by subtracting the finite difference from the previous weight. The weights when iterated and trained on multiple datasets approach a certain point where it can accurately compute a given pattern with a certain accuracy. 
   The \(d\) parameter is one unit of the dataset, which is used to compute the 
   cost function. This optimization is done with every single unit of data set provided to train, for multiple epohs until a local minima has been approached.
   \begin{verbatim}
-src/basoptimizer.rs:26
+src/basoptimizer.rs:29
 
-pub fn optimize(self, mut w: BASMatrix, d: BASMatrix, rate: f64) {
-  let mut x = w.clone();
-  let _ = x.add(&self.h);
-  let mut x1 = BASCost::loss(BASCost::MSE, &x, &d);
-  let _ = x1.sub(&BASCost::loss(BASCost::MSE, &w, &d));
+pub fn optimize(self, mut model: BASModelSEQ, d: &[BASMatrix; 2], layer: usize, rate: f64) {
+  let mut wx = model.clone();
+  wx.layers[layer].weights.scalaradd(self.h);
+  let mut x1 = BASCost::loss(BASCost::MSE, &wx, &d);
+  let _ = x1.sub(&BASCost::loss(BASCost::MSE, &model, &d));
 
-  for i in 0..x1.rows {
-    for j in 0..x1.cols {
-      x1.data[i * x1.cols + j] = 
-        (x1.data[i * x1.cols + j]) / self.h.data[0]*rate;
-    }
-  }
-  let _ = w.sub(&x1);
+  x1.scalarmul(rate/self.h);
+
+  let _ = model.layers[layer].weights.sub(&x1);
 }
     \end{verbatim}
   
