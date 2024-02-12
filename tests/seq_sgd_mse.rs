@@ -1,10 +1,10 @@
 extern crate basilisk;
-use basilisk::{baslayer::BASLayer, basmodel::*, basoptimizer::{BASOptimizer, BASOptimizer_t}};
+use basilisk::{basactivation::BASActivation, baslayer::BASLayer, basmodel::*, basoptimizer::{BASOptimizer, BASOptimizer_t}};
 use basilisk_linalg::basmatrix::BASMatrix;
 
 #[test]
 fn seq_sgd_mse() {
-    let optimzer = BASOptimizer::init(BASOptimizer_t::SGD, 0.00005);
+    let optimzer = BASOptimizer::init(BASOptimizer_t::SGD, 0.00005 as f64);
     let mut model = BASModelSEQ::new(2, optimzer.clone());
 
     let first_layer = BASLayer::flat(1, basilisk::basactivation::BASActivation::NONE);
@@ -20,11 +20,39 @@ fn seq_sgd_mse() {
 
     let d = [input, output];
     model.layers[1].weights.print();
-    for _i in 0..5 {
-        optimzer.to_owned().optimize(model.to_owned(), 
+    for _i in 0..1000 {
+        optimzer.to_owned().optimize(&mut model, 
             &d, 
             1, 
-            0.0005);
+            0.005);
     }
     model.layers[1].weights.print();
+}
+
+fn null(x: f64) -> f64 {
+    return x;
+}
+#[test]
+fn prediction() {
+    let mut pred = BASMatrix::new(1, 1);
+    pred.data[0] = 2.0;
+    let mut w = BASMatrix::new(1, 1);
+    w.data[0] = 1.89;
+
+    print!("before pred: "); pred.print();
+    let mut c = 0;
+    loop {
+        if 1>c {
+            let _ = pred.mul(&w);
+            for i in 0..pred.rows*pred.cols {
+                pred.data[i] = BASActivation::NONE.activate(null, pred.data[i]);
+                print!("once\n");
+            } 
+            c+=1; 
+        }
+        else {
+            break;
+        }
+    }
+    print!("after pred: "); pred.print();
 }

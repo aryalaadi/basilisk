@@ -18,17 +18,19 @@ fn null(x:f64) -> f64 {
 
 fn mse(m: &BASModelSEQ, d: &[BASMatrix; 2]) -> BASMatrix {
     let mut cost = BASMatrix::new(d[1].rows, d[1].cols);
-    let mut pred = BASMatrix::new(d[0].rows, d[0].cols);
+    let mut pred = d[0].clone();
 
-    let mut c = 0;
+    let mut c = 1;
     loop {
-        if m.n-1>=c {
-            let _ = pred.mul(&m.layers[c].weights);
+        if m.n>c {
+            match pred.mul(&m.layers[c].weights) {
+                Ok(_) => {},
+                Err(x) => {print!("{}", x)},
+            };
             for i in 0..pred.rows*pred.cols {
                 pred.data[i] = m.layers[c].act.activate(null, pred.data[i]);
             }
-            if m.n==c {break}
-            else { c+=1; }
+            c+=1; 
         }
         else {
             break;
@@ -40,7 +42,7 @@ fn mse(m: &BASModelSEQ, d: &[BASMatrix; 2]) -> BASMatrix {
     let _ = cost.mul(&cost.clone());
     let n = cost.rows as f64;
     let _ = cost.scalardiv(n);
-
+    
     return cost;
 }
 
