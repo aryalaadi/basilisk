@@ -1,7 +1,8 @@
 /*
     file: basilisk-linalg/src/basmatrix.rs
-    license: GPL3
+    license: LGPL3
 */
+use rand::Rng;
 
 pub enum BASMatrixDevice {
     OPENCL,
@@ -24,9 +25,9 @@ pub fn set_device(d: BASMatrixDevice) {
 
 #[derive(Clone)]
 pub struct BASMatrix {
-    rows: usize,
-    cols: usize,
-    data: Vec<f64>,
+    pub rows: usize,
+    pub cols: usize,
+    pub data: Vec<f64>,
 }
 
 impl BASMatrix {
@@ -36,6 +37,18 @@ impl BASMatrix {
             cols,
             data: vec![0.0; rows * cols],
         }
+    }
+
+    pub fn newrand(rows: usize, cols: usize) -> Self {
+        let mut rng = rand::thread_rng();
+        let mut mat = BASMatrix::new(rows, cols);
+        for i in 0..mat.rows {
+            for j in 0..mat.cols {
+                mat.data[i * mat.cols + j] = rng.gen();
+            }
+            println!();
+        }
+        return mat;
     }
 
     pub fn get(&self, row: usize, col: usize) -> f64 {
@@ -70,6 +83,21 @@ impl BASMatrix {
         }
     }
 
+    pub fn sub(&mut self, to_sub: &BASMatrix) -> Result<i32, &str> {
+        if self.rows == to_sub.rows && self.cols == to_sub.cols {
+            // NOTE: it is VERY safe :p
+            unsafe {
+                match DEV {
+                    BASMatrixDevice::CPU => self._cpu_sub(to_sub),
+                    BASMatrixDevice::OPENCL => self._opencl_sub(to_sub),
+                }
+            }
+            Ok(0)
+        } else {
+            Err("BASMatrix: cannot add")
+        }
+    }
+
     pub fn mul(&mut self, to_mul: &BASMatrix) -> Result<i32, &str> {
         if self.cols == to_mul.rows {
             // NOTE: it is VERY safe :p
@@ -94,6 +122,31 @@ impl BASMatrix {
         }
     }
 
+    pub fn sum(&self) -> f64 {
+        return self.data.iter().sum();
+    }
+    
+    pub fn scalarmul(&mut self, x:f64) {
+        for i in 0..self.rows {
+            for j in 0..self.cols {
+                self.data[i * self.cols + j] = self.data[i * self.cols + j]*x;
+            }
+        }
+    }
+    pub fn scalardiv(&mut self, x:f64) {
+        for i in 0..self.rows {
+            for j in 0..self.cols {
+                self.data[i * self.cols + j] = self.data[i * self.cols + j]/x;
+            }
+        }
+    }
+    pub fn scalaradd(&mut self, x:f64) {
+        for i in 0..self.rows {
+            for j in 0..self.cols {
+                self.data[i * self.cols + j] = self.data[i * self.cols + j]+x;
+            }
+        }
+    }
     /*
         MatA.BASfloatOP(); operates y=BASfloatOP(x) on every element
         BASfloatOP is a pointer a pure float function like sin(x)
@@ -111,6 +164,15 @@ impl BASMatrix {
             for j in 0..self.cols {
                 self.data[i * self.cols + j] =
                     self.data[i * self.cols + j] + to_add.data[i * self.cols + j];
+            }
+        }
+    }
+
+    fn _cpu_sub(&mut self, to_sub: &BASMatrix) {
+        for i in 0..self.rows {
+            for j in 0..self.cols {
+                self.data[i * self.cols + j] =
+                    self.data[i * self.cols + j] - to_sub.data[i * self.cols + j];
             }
         }
     }
@@ -138,6 +200,9 @@ impl BASMatrix {
       intel programs or I write the GPU driver.
     */
     fn _opencl_add(&mut self, to_add: &BASMatrix) {
+        print!("TODO");
+    }
+    fn _opencl_sub(&mut self, to_mul: &BASMatrix) {
         print!("TODO");
     }
     fn _opencl_mul(&mut self, to_mul: &BASMatrix) {
