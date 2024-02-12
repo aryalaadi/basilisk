@@ -172,7 +172,7 @@ impl BASMatrix {
         for i in 0..self.rows {
             for j in 0..self.cols {
                 self.data[i * self.cols + j] =
-                    self.data[i * self.cols + j] + to_sub.data[i * self.cols + j];
+                    self.data[i * self.cols + j] - to_sub.data[i * self.cols + j];
             }
         }
     }
