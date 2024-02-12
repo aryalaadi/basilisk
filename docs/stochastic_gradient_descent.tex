@@ -37,6 +37,7 @@ src/basoptimizer.rs:29
 pub fn optimize(self, mut model: BASModelSEQ, d: &[BASMatrix; 2], layer: usize, rate: f64) {
   let mut wx = model.clone();
   wx.layers[layer].weights.scalaradd(self.h);
+
   let mut x1 = BASCost::loss(BASCost::MSE, &wx, &d);
   let _ = x1.sub(&BASCost::loss(BASCost::MSE, &model, &d));
 
@@ -47,6 +48,23 @@ pub fn optimize(self, mut model: BASModelSEQ, d: &[BASMatrix; 2], layer: usize, 
     \end{verbatim}
   
     \section{testing and observation}
-    TODO
+    To test the accuracy of the implementation, we will check to see if it can 
+    optimize for a simple pattern \(f(x) = 2x\). \newline
+    here,
+
+    \(d = \begin{matrix} 
+      [2], [4]
+    \end{matrix}\) and the model contains a randomized weight.
+    This program uses the SGD optimization to optimize the weight with the given dataset \(d\).
+    \begin{verbatim}
+    tests/seq_sgd_mse.rs: 23
+    for _i in 0..1000 {
+      optimzer.to_owned().optimize(&mut model, 
+        &d, 
+        1, 
+        0.005);
+    }
+    \end{verbatim}
+    As expected, the randomized weight approaches 2.
 \end{document}
 
