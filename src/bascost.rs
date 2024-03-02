@@ -11,11 +11,6 @@ pub enum BASCost {
     SoftMax,
 }
 
-// NOTE: this is a stupid hack
-fn null(x:f64) -> f64 {
-    return x;
-}
-
 fn mse(m: &BASModelSEQ, d: &[BASMatrix; 2]) -> BASMatrix {
     let mut cost = BASMatrix::new(d[1].rows, d[1].cols);
     let mut pred = d[0].clone();
@@ -28,7 +23,7 @@ fn mse(m: &BASModelSEQ, d: &[BASMatrix; 2]) -> BASMatrix {
                 Err(x) => {print!("{}", x)},
             };
             for i in 0..pred.rows*pred.cols {
-                pred.data[i] = m.layers[c].act.activate(null, pred.data[i]);
+                pred.data[i] = m.layers[c].act.activate(pred.data[i]);
             }
             c+=1; 
         }

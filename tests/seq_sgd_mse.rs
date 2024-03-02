@@ -29,9 +29,6 @@ fn seq_sgd_mse() {
     model.layers[1].weights.print();
 }
 
-fn null(x: f64) -> f64 {
-    return x;
-}
 #[test]
 fn prediction() {
     let mut pred = BASMatrix::new(1, 1);
@@ -45,7 +42,7 @@ fn prediction() {
         if 1>c {
             let _ = pred.mul(&w);
             for i in 0..pred.rows*pred.cols {
-                pred.data[i] = BASActivation::NONE.activate(null, pred.data[i]);
+                pred.data[i] = BASActivation::NONE.activate(pred.data[i]);
                 print!("once\n");
             } 
             c+=1; 
