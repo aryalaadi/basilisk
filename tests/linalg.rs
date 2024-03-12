@@ -13,6 +13,7 @@ fn basmat_new() {
         }
     }
     test.print();
+    println!("transpose");
     test.transpose();
     test.print();
     test.BASfloatOP(f64::sin);
@@ -40,6 +41,6 @@ fn mul1x1square() {
     let mut m2 = BASMatrix::new(1, 1);
     m2.data[0] = 0.7691175521351004;
     m1.data[0] = 2.0;
-    let _  = m1.mul(&m2);
+    let _ = m1.mul(&m2);
     m1.print();
 }

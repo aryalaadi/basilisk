@@ -51,16 +51,16 @@ impl BASModelSEQ {
     pub fn set_train_data(&mut self) {
         // large buffer of input values, a matirx of [n_ds, BASLayer.n]
         // in the model struct add new attributes traindata testdata
-        // set traindata to that matrix 
-        // also same for test 
+        // set traindata to that matrix
+        // also same for test
     }
 
     pub fn train() {
-        // a simple for loop n times 
+        // a simple for loop n times
         // another loop for the layers
         // update the weights and activation for each layer in seq
-        // optimize 
-        
+        // optimize
+
         // now make sure the weights and activation can be accessed later on
     }
 }

@@ -3,8 +3,8 @@
     license: LGPL3
 */
 
-use basilisk_linalg::basmatrix::BASMatrix;
 use crate::{bascost::BASCost, basmodel::BASModelSEQ};
+use basilisk_linalg::basmatrix::BASMatrix;
 
 #[derive(Clone)]
 pub enum BASOptimizer_t {
@@ -18,11 +18,8 @@ pub struct BASOptimizer {
 }
 
 impl BASOptimizer {
-    pub fn init(t: BASOptimizer_t, h: f64) -> Self{
-        BASOptimizer {
-            t: t,
-            h: h,
-        }
+    pub fn init(t: BASOptimizer_t, h: f64) -> Self {
+        BASOptimizer { t: t, h: h }
     }
 
     pub fn optimize(self, model: &mut BASModelSEQ, d: &[BASMatrix; 2], layer: usize, rate: f64) {
@@ -32,8 +29,8 @@ impl BASOptimizer {
         let mut x1 = BASCost::loss(BASCost::MSE, &wx, &d);
         let _ = x1.sub(&BASCost::loss(BASCost::MSE, &model, &d));
 
-        x1.scalarmul(rate/self.h);
-        
+        x1.scalarmul(rate / self.h);
+
         let _ = model.layers[layer].weights.sub(&x1);
     }
 }

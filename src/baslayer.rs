@@ -3,8 +3,8 @@
     license: LGPL3
 */
 
-use basilisk_linalg::basmatrix::BASMatrix;
 use crate::basactivation::*;
+use basilisk_linalg::basmatrix::BASMatrix;
 
 #[derive(Clone)]
 pub enum BASLayer_t {

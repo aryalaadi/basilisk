@@ -3,8 +3,8 @@
     license:    LGPL3
 */
 
-use basilisk_linalg::basmatrix::BASMatrix;
 use crate::basmodel::BASModelSEQ;
+use basilisk_linalg::basmatrix::BASMatrix;
 
 pub enum BASCost {
     MSE,
@@ -17,17 +17,18 @@ fn mse(m: &BASModelSEQ, d: &[BASMatrix; 2]) -> BASMatrix {
 
     let mut c = 1;
     loop {
-        if m.n>c {
+        if m.n > c {
             match pred.mul(&m.layers[c].weights) {
-                Ok(_) => {},
-                Err(x) => {print!("{}", x)},
+                Ok(_) => {}
+                Err(x) => {
+                    print!("{}", x)
+                }
             };
-            for i in 0..pred.rows*pred.cols {
+            for i in 0..pred.rows * pred.cols {
                 pred.data[i] = m.layers[c].act.activate(pred.data[i]);
             }
-            c+=1; 
-        }
-        else {
+            c += 1;
+        } else {
             break;
         }
     }
@@ -37,7 +38,7 @@ fn mse(m: &BASModelSEQ, d: &[BASMatrix; 2]) -> BASMatrix {
     let _ = cost.mul(&cost.clone());
     let n = cost.rows as f64;
     let _ = cost.scalardiv(n);
-    
+
     return cost;
 }
 
