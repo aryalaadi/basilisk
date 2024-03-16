@@ -199,16 +199,16 @@ impl BASMatrix {
     opencl backend on hold until either I package the
     intel programs or I write the GPU driver.
 
-	update: instead of using an already dying compute api
-	i figured it would be better to use either vulkan or wgpu
-	compute, and considering wgpu is much easier, I chose to use it
-	instead
+    update: instead of using an already dying compute api
+    i figured it would be better to use either vulkan or wgpu
+    compute, and considering wgpu is much easier, I chose to use it
+    instead
 
-	TODO: create a wgpu compute wrapper library called basilisk-compute
+    TODO: create a wgpu compute wrapper library called basilisk-compute
 
-	also the static global variable is retarded
-	might consder making these function public
-	or rewrite the whole CPU/GPU thing.
+    also the static global variable is retarded
+    might consder making these function public
+    or rewrite the whole CPU/GPU thing.
     */
     fn _wgpu_add(&mut self, to_add: &BASMatrix) {
         print!("TODO");
